@@ -1,0 +1,109 @@
+﻿using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace Velocity.Service.Networking;
+
+/// <summary>
+/// Provides functionality to initiate TCP connections to a specified host and port.
+/// </summary>
+/// <remarks>
+/// The <see cref="TcpConnector"/> class facilitates the establishment of TCP socket connections
+/// using custom DNS resolution and address selection strategies. It supports asynchronous operations
+/// and allows custom options to fine-tune connection behavior.
+/// </remarks>
+public sealed class TcpConnector(
+    IDnsResolver dnsResolver,
+    IAddressSelector addressSelector,
+    ILogger<TcpConnector> logger,
+    IOptions<TcpClientOptions> options)
+{
+    private readonly TcpClientOptions _clientOptions = options.Value;
+
+    /// <summary>
+    /// Establishes an asynchronous TCP connection to the specified host and port.
+    /// </summary>
+    /// <param name="host">The hostname or IP address of the remote endpoint to connect to. Cannot be null or empty.</param>
+    /// <param name="port">The port number of the remote endpoint to connect to.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the connection attempt.</param>
+    /// <returns>A task representing the asynchronous operation, with a <see cref="Socket"/> as the result upon successful connection.</returns>
+    /// <exception cref="ArgumentException">Thrown when the <paramref name="host"/> is null, empty, or contains only whitespace.</exception>
+    /// <exception cref="SocketException">Thrown when a failure occurs during the socket connection process, such as the host not being found.</exception>
+    /// <exception cref="AggregateException">Thrown when all connection attempts to the resolved addresses fail. Contains inner exceptions with failure details.</exception>
+    public async ValueTask<Socket> ConnectAsync(string host, int port, CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(host);
+
+        var resolvedAddresses = await dnsResolver.ResolveAsync(host, cancellationToken);
+
+        var addresses = addressSelector.Select(resolvedAddresses, _clientOptions.AddressFamilyPreference);
+
+        if (addresses.Count == 0)
+            throw new SocketException((int)SocketError.HostNotFound);
+        
+        List<Exception> failures = [];
+
+        foreach (var address in addresses)
+        {
+            Socket? socket = null;
+
+            try
+            {
+                socket = CreateSocket(address);
+
+                using var timeoutCts = new CancellationTokenSource(_clientOptions.ConnectTimeout);
+
+                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                        timeoutCts.Token,
+                        cancellationToken);
+
+                IPEndPoint endpoint = new(address, port);
+
+                var started = Stopwatch.GetTimestamp();
+
+                logger.LogDebug(
+                    "Connecting to {Host}:{Port} via {Address} ({Family})",
+                    host,
+                    port,
+                    address,
+                    address.AddressFamily);
+
+                await socket.ConnectAsync(endpoint, linkedCts.Token);
+
+                var elapsed = Stopwatch.GetElapsedTime(started);
+
+                logger.LogInformation(
+                    "Connected to {Host}:{Port} via {Address} ({Family}) in {ElapsedMs} ms",
+                    host,
+                    port,
+                    address,
+                    address.AddressFamily,
+                    elapsed.TotalMilliseconds);
+
+                return socket;
+            }
+            catch (Exception ex) when (IsConnectFailure(ex, cancellationToken))
+            {
+                socket?.Dispose();
+                failures.Add(ex);
+                
+                logger.LogWarning(ex, "Failed to connect to {Host}:{Port} via {Address}", host, port, address);
+            }
+        }
+
+        throw new AggregateException($"Failed to connect to {host}:{port}.", failures);
+    }
+
+    // creates a socket for the specified address family
+    private static Socket CreateSocket(IPAddress address)
+        => new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
+    
+    // determines if the exception indicates a connection failure
+    private static bool IsConnectFailure(Exception exception, CancellationToken outerCancellationToken)
+    {
+        if (outerCancellationToken.IsCancellationRequested) return false;
+        return exception is SocketException or OperationCanceledException or TimeoutException;
+    }
+}
