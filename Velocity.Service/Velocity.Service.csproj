@@ -14,8 +14,4 @@
       <PackageReference Include="Microsoft.Extensions.Options" Version="11.0.0-preview.3.26207.106" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Xmpp\" />
-    </ItemGroup>
-
 </Project>

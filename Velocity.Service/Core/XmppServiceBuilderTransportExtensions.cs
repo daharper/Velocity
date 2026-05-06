@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Velocity.Service.Networking;
 using Velocity.Service.Transport;
+using Velocity.Service.Xmpp;
 
 namespace Velocity.Service.Core;
 
@@ -21,7 +22,8 @@ public static class XmppServiceBuilderTransportExtensions
         builder.HostBuilder.Services.AddSingleton<TcpConnector>();
 
         builder.HostBuilder.Services.AddSingleton<ITransportConnector, TcpTransportConnector>();
-
+        builder.HostBuilder.Services.AddSingleton<IXmppConnectionHandler, XmppConnectionHandler>();
+        
         return builder;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Velocity.Service.Transport;
+using Velocity.Service.Xmpp;
 
 namespace Velocity.Service.Core;
 
@@ -26,10 +27,11 @@ public sealed class XmppService(IHost host) : IAsyncDisposable
         await host.StartAsync(cancellationToken);
 
         var transport = host.Services.GetRequiredService<ITransportConnector>();
+        var handler = host.Services.GetRequiredService<IXmppConnectionHandler>();
 
         await using var connection = await transport.ConnectAsync(cancellationToken);
 
-        await host.WaitForShutdownAsync(cancellationToken);
+        await handler.HandleAsync(connection, cancellationToken);
     }
 
     /// <summary>
