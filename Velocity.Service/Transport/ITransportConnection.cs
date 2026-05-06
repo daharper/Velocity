@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IO.Pipelines;
+using System.Net;
 
 namespace Velocity.Service.Transport;
 
@@ -10,5 +11,7 @@ public interface ITransportConnection : IAsyncDisposable
 {
     EndPoint? RemoteEndPoint { get; }
 
-    Stream Stream { get; }
+    PipeReader Input { get; }
+
+    PipeWriter Output { get; }
 }
