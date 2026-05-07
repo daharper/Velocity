@@ -54,4 +54,9 @@ public sealed class XmppStreamParser : IXmppStreamParser
         //     }
         // }
     }
+    
+    public void Reset()
+    {
+        _buffer.Clear();
+    }
 }

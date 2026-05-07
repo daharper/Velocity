@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Velocity.Service.Networking;
 using Velocity.Service.Transport;
 using Velocity.Service.Xmpp;
 
@@ -28,10 +31,42 @@ public sealed class XmppService(IHost host) : IAsyncDisposable
 
         var transport = host.Services.GetRequiredService<ITransportConnector>();
         var handler = host.Services.GetRequiredService<IXmppConnectionHandler>();
+        var logger = host.Services.GetRequiredService<ILogger<XmppService>>();
+        var options = host.Services.GetRequiredService<IOptions<TcpClientOptions>>().Value;
+        
+        var attempt = 0;
 
-        await using var connection = await transport.ConnectAsync(cancellationToken);
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                ++attempt;
 
-        await handler.HandleAsync(connection, cancellationToken);
+                logger.LogInformation("Starting XMPP connection attempt {Attempt}", attempt);
+
+                await using var connection = await transport.ConnectAsync(cancellationToken);
+
+                attempt = 0;
+
+                await handler.HandleAsync(connection, cancellationToken);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "XMPP connection failed. Reconnecting.");
+
+                if (options.MaxReconnectAttempts is { } max && attempt >= max)
+                {
+                    logger.LogError(ex, "XMPP connection failed after {Attempt} attempt(s). Stopping.", attempt);
+                    throw;
+                }
+
+                await Task.Delay(options.ReconnectDelay, cancellationToken);
+            }
+        }
     }
 
     /// <summary>

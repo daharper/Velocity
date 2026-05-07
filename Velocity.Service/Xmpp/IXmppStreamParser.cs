@@ -12,4 +12,6 @@ public interface IXmppStreamParser
     /// <param name="stanzas">The collection to which parsed stanzas will be added.</param>
     /// <param name="cancellationToken">Token used to monitor for cancellation requests.</param>
     void Parse(ReadOnlySpan<char> chars, ICollection<string> stanzas, CancellationToken cancellationToken);
+    
+    void Reset();
 }

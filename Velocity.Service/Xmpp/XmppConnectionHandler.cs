@@ -82,18 +82,17 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
                 SingleReader = true,
                 FullMode = BoundedChannelFullMode.Wait
             });
-
-        _outputWriter.Attach(outbound.Writer);
-
+        
         _logger.LogInformation("XMPP connection established to {RemoteEndPoint}", connection.RemoteEndPoint);
 
+        _parser.Reset();
+        _outputWriter.Attach(outbound.Writer);
+        
         var readLoop = RunReadLoopAsync(connection.Input, inbound.Writer, cancellationToken);
         var dispatchLoop = RunDispatchLoopAsync(inbound.Reader, cancellationToken);
         var writeLoop = RunWriteLoopAsync(outbound.Reader, connection.Output, cancellationToken);
-
-        await _outputWriter.WriteAsync(
-            CreateOpeningStreamXml(),
-            cancellationToken);
+        
+        await _outputWriter.WriteAsync(CreateOpeningStreamXml(), cancellationToken);
 
         try
         {

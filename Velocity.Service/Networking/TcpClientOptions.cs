@@ -67,4 +67,16 @@ public sealed class TcpClientOptions
     /// when the initial connection attempt fails.
     /// </summary>
     public TimeSpan FallbackDelay { get; init; }
+
+    /// <summary>
+    /// Specifies the maximum number of reconnection attempts allowed when a TCP connection is lost.
+    /// A value of <c>null</c> indicates that there is no limit on the number of reconnection attempts.
+    /// </summary>
+    public int? MaxReconnectAttempts { get; init; } = null;
+    
+    /// <summary>
+    /// Specifies the amount of time to wait before attempting to reconnect to a server
+    /// after a connection is lost or a connection attempt fails.
+    /// </summary>
+    public TimeSpan ReconnectDelay { get; init; } = TimeSpan.FromSeconds(5);
 }
