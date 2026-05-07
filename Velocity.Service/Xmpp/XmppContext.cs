@@ -1,4 +1,6 @@
-﻿namespace Velocity.Service.Xmpp;
+﻿using Velocity.Service.Identity;
+
+namespace Velocity.Service.Xmpp;
 
 /// <summary>
 /// Represents the context for processing an XMPP stanza within the middleware pipeline.
@@ -18,6 +20,13 @@ public sealed class XmppContext
     /// Gets or sets the endpoint that should handle the current XMPP stanza within the middleware pipeline.
     /// </summary>
     public XmppEndpoint? Endpoint { get; set; }
+
+    /// <summary>
+    /// Gets or sets the authorization profile associated with the current XMPP context,
+    /// which provides user-specific authorization information, including JID, primary role,
+    /// and group roles.
+    /// </summary>
+    public AuthorizationProfile? Authorization { get; set; }
     
     /// <summary>
     /// Gets the output writer responsible for sending XMPP stanzas to the connection's socket.

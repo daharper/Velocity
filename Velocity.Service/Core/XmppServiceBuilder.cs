@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Velocity.Service.Identity;
 using Velocity.Service.Networking;
 using Velocity.Service.Transport;
 using Velocity.Service.Xmpp;
@@ -50,6 +51,20 @@ public sealed class XmppServiceBuilder
         return this;
     }
     
+    public XmppServiceBuilder AddSingleton<TService, TImplementation>()
+        where TService : class
+        where TImplementation : class, TService
+    {
+        HostBuilder.Services.AddSingleton<TService, TImplementation>();
+        return this;
+    }
+    
+    public XmppServiceBuilder AddSingleton<TService>(TService instance) where TService : class
+    {
+        HostBuilder.Services.AddSingleton(instance);
+        return this;
+    }
+    
     /// <summary>
     /// Builds and returns an instance of the <see cref="XmppService"/> using the current configuration settings.
     /// </summary>
@@ -58,6 +73,7 @@ public sealed class XmppServiceBuilder
     {
         HostBuilder.Services.AddSingleton<XmppChannelMetrics>();
         HostBuilder.Services.AddHostedService<RuntimeMetricsService>();
+        HostBuilder.Services.AddSingleton<AuthorizationCache>();
         
         foreach (var middlewareType in _middlewareTypes)
         {

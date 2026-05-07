@@ -6,7 +6,7 @@ namespace Velocity.Service.Middleware;
 /// <summary>
 /// Middleware placeholder for building out the pipeline
 /// </summary>
-public sealed class EndpointMiddleware(ILogger<RouterMiddleware> logger) : IXmppMiddleware
+public sealed class EndpointMiddleware(ILogger<EndpointMiddleware> logger) : IXmppMiddleware
 {
     public async ValueTask InvokeAsync(XmppContext context, XmppDelegate next)
     {
