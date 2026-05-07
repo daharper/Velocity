@@ -5,6 +5,8 @@
 /// </summary>
 public interface IXmppOutputWriter
 {
+    bool IsAttached { get; }
+    
     /// <summary>
     /// Writes an XML stanza asynchronously to the attached XMPP output channel.
     /// </summary>

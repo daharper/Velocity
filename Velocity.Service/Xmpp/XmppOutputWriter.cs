@@ -15,6 +15,8 @@ public sealed class XmppOutputWriter : IXmppOutputWriter
         _metrics = metrics;
     }
     
+    public bool IsAttached => _writer != null;
+    
     /// <summary>
     /// Attaches a channel writer to the XmppOutputWriter, enabling it to write XMPP stanzas to the output channel.
     /// </summary>
