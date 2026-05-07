@@ -11,7 +11,7 @@ namespace Velocity.Service.Core;
 /// </summary>
 public sealed class XmppServiceBuilder
 {
-    internal HostApplicationBuilder HostBuilder { get; }
+    private HostApplicationBuilder HostBuilder { get; }
 
     private readonly List<Type> _middlewareTypes = [];
     
@@ -38,7 +38,6 @@ public sealed class XmppServiceBuilder
         HostBuilder.Services.AddSingleton<IXmppResponseWriter, XmppResponseWriter>();
         HostBuilder.Services.AddSingleton<XmppOutputWriter>();
         HostBuilder.Services.AddSingleton<IXmppOutputWriter>(sp => sp.GetRequiredService<XmppOutputWriter>());
-        HostBuilder.Services.AddSingleton<IXmppPipeline, XmppPipeline>();
         HostBuilder.Services.AddSingleton<IXmppConnectionHandler, XmppConnectionHandler>();
         
         return this;
@@ -57,10 +56,15 @@ public sealed class XmppServiceBuilder
     /// <returns>A fully configured <see cref="XmppService"/> instance.</returns>
     public XmppService Build()
     {
+        HostBuilder.Services.AddSingleton<XmppChannelMetrics>();
+        HostBuilder.Services.AddHostedService<RuntimeMetricsService>();
+        
         foreach (var middlewareType in _middlewareTypes)
         {
             HostBuilder.Services.AddSingleton(typeof(IXmppMiddleware), middlewareType);
         }
+        
+        HostBuilder.Services.AddSingleton<IXmppPipeline, XmppPipeline>();
 
         var host = HostBuilder.Build();
 

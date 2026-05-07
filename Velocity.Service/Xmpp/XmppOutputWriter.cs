@@ -8,7 +8,13 @@ namespace Velocity.Service.Xmpp;
 public sealed class XmppOutputWriter : IXmppOutputWriter
 {
     private ChannelWriter<string>? _writer;
-
+    private XmppChannelMetrics _metrics;
+    
+    public XmppOutputWriter(XmppChannelMetrics metrics)
+    {
+        _metrics = metrics;
+    }
+    
     /// <summary>
     /// Attaches a channel writer to the XmppOutputWriter, enabling it to write XMPP stanzas to the output channel.
     /// </summary>
@@ -29,6 +35,16 @@ public sealed class XmppOutputWriter : IXmppOutputWriter
     {
         var writer = _writer ?? throw new InvalidOperationException("XMPP output writer is not attached.");
 
-        return writer.WriteAsync(xml, cancellationToken);
+        _metrics.OutboundQueued();
+
+        try
+        {
+            return writer.WriteAsync(xml, cancellationToken);
+        }
+        catch
+        {
+            _metrics.OutboundDequeued();
+            throw;
+        }
     }
 }

@@ -21,6 +21,7 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
     private readonly TcpClientOptions _clientOptions;
     private readonly IXmppPipeline _pipeline;
     private readonly IServiceProvider _services;
+    private readonly XmppChannelMetrics _metrics;
     private readonly ILogger<XmppConnectionHandler> _logger;
 
     #endregion
@@ -32,6 +33,7 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
     /// <param name="outputWriter">The writer used to send XMPP data to the remote party.</param>
     /// <param name="pipeline">The pipeline for processing XMPP routing and events.</param>
     /// <param name="services">The service provider for resolving application-level dependencies.</param>
+    /// <param name="metrics">The metrics tracking component for XMPP channel performance.</param>
     /// <param name="clientOptions">The configuration options for the TCP client connection.</param>
     /// <param name="logger">The logger instance for event and error reporting related to the connection handler.</param>
     public XmppConnectionHandler(
@@ -39,6 +41,7 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
         XmppOutputWriter outputWriter,
         IXmppPipeline pipeline,
         IServiceProvider services,
+        XmppChannelMetrics metrics,
         IOptions<TcpClientOptions> clientOptions,
         ILogger<XmppConnectionHandler> logger)
     {
@@ -46,6 +49,7 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
         _outputWriter = outputWriter;
         _pipeline = pipeline;
         _services = services;
+        _metrics = metrics;
         _clientOptions = clientOptions.Value;
         _logger = logger;
     }
@@ -188,7 +192,17 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
                 
                 foreach (var stanza in stanzas)
                 {
-                    await inboundWriter.WriteAsync(stanza, cancellationToken);
+                    _metrics.InboundQueued();
+
+                    try
+                    {
+                        await inboundWriter.WriteAsync(stanza, cancellationToken);
+                    }
+                    catch
+                    {
+                        _metrics.InboundDequeued();
+                        throw;
+                    }
                 }
 
                 stanzas.Clear();
@@ -221,6 +235,8 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
                 CancellationToken = cancellationToken
             };
 
+            _metrics.InboundDequeued();
+            
             await _pipeline.ExecuteAsync(context);
         }
     }
@@ -241,6 +257,8 @@ public sealed class XmppConnectionHandler : IXmppConnectionHandler
     {
         await foreach (var xml in reader.ReadAllAsync(cancellationToken))
         {
+            _metrics.OutboundDequeued();
+            
             await WriteUtf8Async(output, xml, cancellationToken);
             await output.FlushAsync(cancellationToken);
         }
