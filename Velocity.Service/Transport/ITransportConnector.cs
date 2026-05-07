@@ -3,12 +3,14 @@
 /// <summary>
 /// Defines the contract for creating and managing transport connections in a service.
 /// </summary>
-/// <remarks>
-/// Implementations of this interface are responsible for establishing connections to a specific
-/// transport medium, such as TCP or other communication protocols. The <see cref="ConnectAsync"/>
-/// method provides an asynchronous mechanism to initiate and obtain the connection.
-/// </remarks>
 public interface ITransportConnector
 {
+    /// <summary>
+    /// Establishes a transport connection asynchronously to a remote endpoint.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation containing an <see cref="ITransportConnection"/>
+    /// </returns>
     ValueTask<ITransportConnection> ConnectAsync(CancellationToken cancellationToken);
 }

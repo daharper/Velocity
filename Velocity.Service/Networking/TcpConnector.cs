@@ -9,11 +9,6 @@ namespace Velocity.Service.Networking;
 /// <summary>
 /// Provides functionality to initiate TCP connections to a specified host and port.
 /// </summary>
-/// <remarks>
-/// The <see cref="TcpConnector"/> class facilitates the establishment of TCP socket connections
-/// using custom DNS resolution and address selection strategies. It supports asynchronous operations
-/// and allows custom options to fine-tune connection behavior.
-/// </remarks>
 public sealed class TcpConnector(
     IDnsResolver dnsResolver,
     IAddressSelector addressSelector,
@@ -25,19 +20,15 @@ public sealed class TcpConnector(
     /// <summary>
     /// Establishes an asynchronous TCP connection to the specified host and port.
     /// </summary>
-    /// <param name="host">The hostname or IP address of the remote endpoint to connect to. Cannot be null or empty.</param>
+    /// <param name="host">The hostname or IP address of the remote endpoint to connect to.</param>
     /// <param name="port">The port number of the remote endpoint to connect to.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the connection attempt.</param>
-    /// <returns>A task representing the asynchronous operation, with a <see cref="Socket"/> as the result upon successful connection.</returns>
-    /// <exception cref="ArgumentException">Thrown when the <paramref name="host"/> is null, empty, or contains only whitespace.</exception>
-    /// <exception cref="SocketException">Thrown when a failure occurs during the socket connection process, such as the host not being found.</exception>
-    /// <exception cref="AggregateException">Thrown when all connection attempts to the resolved addresses fail. Contains inner exceptions with failure details.</exception>
+    /// <returns>A task representing the asynchronous operation, with a <see cref="Socket"/> result.</returns>
     public async ValueTask<Socket> ConnectAsync(string host, int port, CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(host);
 
         var resolvedAddresses = await dnsResolver.ResolveAsync(host, cancellationToken);
-
         var addresses = addressSelector.Select(resolvedAddresses, _clientOptions.AddressFamilyPreference);
 
         if (addresses.Count == 0)
@@ -95,10 +86,10 @@ public sealed class TcpConnector(
 
         throw new AggregateException($"Failed to connect to {host}:{port}.", failures);
     }
-
-    // creates a socket for the specified address family
+    
+    // Creates a new instance of a <see cref="Socket"/> configured for TCP connections using the specified IP address.
     private static Socket CreateSocket(IPAddress address)
-        => new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
+        => new(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
     
     // determines if the exception indicates a connection failure
     private static bool IsConnectFailure(Exception exception, CancellationToken outerCancellationToken)

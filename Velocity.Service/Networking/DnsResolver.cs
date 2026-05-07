@@ -20,19 +20,10 @@ public sealed class DnsResolver(
     /// <summary>
     /// Resolves the specified DNS hostname to an array of IP addresses asynchronously.
     /// </summary>
-    /// <param name="host">
-    /// The hostname to resolve. This must be a non-null, non-empty string.
-    /// </param>
-    /// <param name="cancellationToken">
-    /// A cancellation token to observe while waiting for the resolution to complete.
-    /// </param>
+    /// <param name="host">The hostname to resolve.</param>
+    /// <param name="cancellationToken">A cancellation token.</param>
     /// <returns>
-    /// A task representing the asynchronous operation. The task result contains an array of
-    /// <see cref="IPAddress"/> objects that represent the resolved IP addresses for the specified hostname.
-    /// </returns>
-    /// <exception cref="ArgumentException">
-    /// Thrown if the <paramref name="host"/> is null, empty, or consists only of whitespace.
-    /// </exception>
+    /// A task for an array of <see cref="IPAddress"/> objects that represent the resolved IP addresses.</returns>
     public async ValueTask<IPAddress[]> ResolveAsync(string host, CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(host);
@@ -45,7 +36,7 @@ public sealed class DnsResolver(
                 normalizedHost,
                 cancellationToken);
 
-            return ToIPAddresses(cacheEntry);
+            return ToIpAddresses(cacheEntry);
         }
         
         var cacheOptions = new HybridCacheEntryOptions
@@ -63,8 +54,7 @@ public sealed class DnsResolver(
         return entry.Addresses.Select(IPAddress.Parse).ToArray();
     }
     
-    // Resolves the specified DNS hostname to an array of IP addresses asynchronously,
-    // bypassing any caching mechanism.
+    // Resolves the specified DNS hostname to an array of IP addresses asynchronously, bypassing any caching mechanism.
     private async ValueTask<DnsCacheEntry> ResolveUncachedAsync(string host, CancellationToken cancellationToken)
     {
         var started = TimeProvider.System.GetTimestamp();
@@ -80,11 +70,11 @@ public sealed class DnsResolver(
         return new DnsCacheEntry(addresses.Select(static a => a.ToString()).ToArray());
     }
 
-    private static IPAddress[] ToIPAddresses(DnsCacheEntry entry)
+    // Converts a DNS cache entry into an array of IPAddress objects.
+    private static IPAddress[] ToIpAddresses(DnsCacheEntry entry)
         => entry.Addresses.Select(IPAddress.Parse).ToArray();
     
-    
-    // Cleans up the hostname by trimming whitespace, removing trailing dots, and converting to lowercase.
+    // Normalizes the specified DNS hostname.
     private static string NormalizeHost(string host)
         => host.Trim().TrimEnd('.').ToLowerInvariant();
 }

@@ -6,11 +6,6 @@ namespace Velocity.Service.Transport;
 /// <summary>
 /// Represents a transport connector that establishes TCP-based connections.
 /// </summary>
-/// <remarks>
-/// The <see cref="TcpTransportConnector"/> class provides a mechanism to open TCP connections by leveraging
-/// the <see cref="TcpConnector"/> and configurable options specified in <see cref="TcpClientOptions"/>.
-/// It is designed to be used as part of the transport layer to facilitate communication over TCP sockets.
-/// </remarks>
 public sealed class TcpTransportConnector(
     TcpConnector tcpConnector,
     IOptions<TcpClientOptions> options) : ITransportConnector
@@ -32,6 +27,6 @@ public sealed class TcpTransportConnector(
             _options.Port,
             cancellationToken);
 
-        return new SocketTransportConnection(socket);
+        return new SocketTransportConnection(socket, _options);
     }
 }

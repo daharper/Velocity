@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Velocity.Service.Middleware;
 using Velocity.Service.Networking;
 using Velocity.Service.Transport;
 using Velocity.Service.Xmpp;
@@ -24,6 +25,14 @@ public static class XmppServiceBuilderTransportExtensions
         builder.HostBuilder.Services.AddSingleton<ITransportConnector, TcpTransportConnector>();
         builder.HostBuilder.Services.AddSingleton<IXmppConnectionHandler, XmppConnectionHandler>();
         builder.HostBuilder.Services.AddSingleton<IXmppStreamParser, XmppStreamParser>();
+        
+        builder.HostBuilder.Services.AddSingleton<XmppOutputWriter>();
+        builder.HostBuilder.Services.AddSingleton<IXmppOutputWriter>(sp => sp.GetRequiredService<XmppOutputWriter>());
+        
+        builder.HostBuilder.Services.AddSingleton<IXmppPipeline, XmppPipeline>();
+        builder.HostBuilder.Services.AddSingleton<IXmppMiddleware, LoggingMiddleware>();
+        builder.HostBuilder.Services.AddSingleton<IXmppMiddleware, RouterMiddleware>();
+        builder.HostBuilder.Services.AddSingleton<IXmppMiddleware, EndPointMiddleware>();        
         
         return builder;
     }

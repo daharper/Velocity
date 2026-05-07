@@ -36,7 +36,6 @@ public sealed class XmppService(IHost host) : IAsyncDisposable
 
     /// <summary>
     /// Releases the unmanaged resources and disposes of the managed resources used by the XMPP service asynchronously.
-    /// This includes stopping the host and disposing of its resources.
     /// </summary>
     /// <returns>A task that represents the asynchronous disposal operation.</returns>
     public async ValueTask DisposeAsync()
