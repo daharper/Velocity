@@ -17,6 +17,8 @@
     <ItemGroup>
       <Compile Remove="Xmpp\IXmppStanzaHandler.cs" />
       <Compile Remove="Xmpp\XmppStanzaHandler.cs" />
+      <Compile Remove="Core\XmppServiceBuilderMiddlewareExtensions.cs" />
+      <Compile Remove="Core\XmppServiceBuilderExtensions.cs" />
     </ItemGroup>
 
 </Project>
