@@ -23,6 +23,7 @@ public static class XmppServiceBuilderTransportExtensions
 
         builder.HostBuilder.Services.AddSingleton<ITransportConnector, TcpTransportConnector>();
         builder.HostBuilder.Services.AddSingleton<IXmppConnectionHandler, XmppConnectionHandler>();
+        builder.HostBuilder.Services.AddSingleton<IXmppStreamParser, XmppStreamParser>();
         
         return builder;
     }

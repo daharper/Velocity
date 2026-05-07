@@ -9,6 +9,8 @@ public sealed class TcpClientOptions
    
     public int Port { get; init; }
     
+    public string ComponentName { get; init; } = "";
+    
     public AddressFamilyPreference AddressFamilyPreference { get; init; }
     
     public TimeSpan ConnectTimeout { get; init; }
