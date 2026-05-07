@@ -15,6 +15,11 @@ public sealed class XmppContext
     public required string Stanza { get; init; }
 
     /// <summary>
+    /// Gets or sets the endpoint that should handle the current XMPP stanza within the middleware pipeline.
+    /// </summary>
+    public XmppEndpoint? Endpoint { get; set; }
+    
+    /// <summary>
     /// Gets the output writer responsible for sending XMPP stanzas to the connection's socket.
     /// </summary>
     public required IXmppOutputWriter Output { get; init; }
