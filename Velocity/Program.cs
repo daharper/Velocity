@@ -7,6 +7,7 @@ var service = XmppService.CreateBuilder(args)
     .UseMiddleware<ExceptionHandlingMiddleware>()
     .UseMiddleware<LoggingMiddleware>()
     .UseMiddleware<RouterMiddleware>()
+    .UseMiddleware<EndpointMiddleware>()
     .Build();
 
 await service.RunAsync();
