@@ -1,5 +1,8 @@
-High-performance real-time messaging in C#.
+An XMPP Component Framework.
 
-XMPP Component Framework, with the simplicity of ASP.NET Core.
+The objectives of this project are:
+
+- High-performance 
+- ASP.NET Core simplicity
 
 Technologies: C# 15, .NET 11 preview.
