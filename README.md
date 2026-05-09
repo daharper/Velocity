@@ -10,7 +10,9 @@ They are real-time messaging powerhouses.
 
 The goal of this project is modest: to bring the simplicity found in many REST APIs to XMPP Components, abstracting away messaging concerns from API developers, to make XMPP services an attractive alternative to REST services.
 
-HTTP/XMPP brokering services will manage stateless HTTP connections, whereas XMPP clients just function as normal via a persistent XMPP connection to the server. A planned code generator will create client-proxies from the service APIs.
+HTTP/XMPP brokering services will manage stateless HTTP connections, whereas XMPP clients just function as normal via a persistent XMPP connection to the server. 
+
+A planned code generator will create client-proxies from the service APIs.
 
 I have a personal need for such a framework, but it may be of interest to others.
 
