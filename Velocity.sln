@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Velocity", "Velocity\Veloci
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Velocity.Service", "Velocity.Service\Velocity.Service.csproj", "{50CDD878-1EA5-42DA-B0B4-0659665F16E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Velocity.Foundation", "Velocity.Foundation\Velocity.Foundation.csproj", "{99D6B41A-9962-4EA4-946B-12E390BC0C06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Velocity.Protocol", "Velocity.Protocol\Velocity.Protocol.csproj", "{97594DED-7CE0-4D75-9B5E-659976094A2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{50CDD878-1EA5-42DA-B0B4-0659665F16E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50CDD878-1EA5-42DA-B0B4-0659665F16E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50CDD878-1EA5-42DA-B0B4-0659665F16E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99D6B41A-9962-4EA4-946B-12E390BC0C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99D6B41A-9962-4EA4-946B-12E390BC0C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99D6B41A-9962-4EA4-946B-12E390BC0C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99D6B41A-9962-4EA4-946B-12E390BC0C06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97594DED-7CE0-4D75-9B5E-659976094A2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97594DED-7CE0-4D75-9B5E-659976094A2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97594DED-7CE0-4D75-9B5E-659976094A2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97594DED-7CE0-4D75-9B5E-659976094A2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
