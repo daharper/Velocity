@@ -1,6 +1,6 @@
 This is a C# XMPP framework I've been working on.
 
-The network plumbing is in place, I'll build out the protocol/parser types next.
+The essential network plumbing is in place, I'll build out the protocol/parser types next.
 
 The objectives are performance and simplicity. 
 
