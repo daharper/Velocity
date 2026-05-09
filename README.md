@@ -16,6 +16,6 @@ A planned code generator will create client-proxies from the service APIs.
 
 I have a personal need for such a framework, but it may be of interest to others.
 
-The project is using C# 15/.NET 11 preview. It's being developed under an MIT license so feel free to fork or use as you see fit.
+The project is using C# 15/.NET 11 preview. C# is a pleasure to work with, it keeps getting better.
 
-C# is a pleasure to work with, it keeps getting better.
+It's being developed under an MIT license so feel free to fork or use as you see fit.
