@@ -10,6 +10,4 @@ The goal of this project is modest: to bring the simplicity found in many REST A
 
 I have a personal need for such a framework, but it may be of interest to others.
 
-The project is using C# 15/.NET 11 preview. It's being developed under an MIT license so feel free to fork or use as you see fit.
-
-C# is a pleasure to work with, it keeps getting better.
+The project is using C# 15/.NET 11 preview. It's being developed under an MIT license so feel free to fork or use as you see fit. C# is a pleasure to work with, it keeps getting better.
