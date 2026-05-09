@@ -4,7 +4,7 @@ The essential network plumbing is in place, I'll build out the protocol/parser t
 
 The objectives are performance and simplicity. 
 
-XMMP servers like ejabberd can scale to 2 million connections on a single node. 
+XMMP servers like ejabberd can scale to two million connections on a single node. 
 
 They are real-time messaging powerhouses. 
 
