@@ -8,7 +8,7 @@ namespace Velocity.Foundation.Xml;
 /// A utility class for handling XML serialization and deserialization, as well as providing
 /// additional XML-related functionality such as saving, loading, and pretty-printing XML content.
 /// </summary>
-public static class XmlUtils
+public static class BvXmlUtils
 {
     /// <summary>
     /// Serializes the specified object into its XML string representation.
