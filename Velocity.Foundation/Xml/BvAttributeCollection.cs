@@ -57,7 +57,23 @@ public sealed class BvAttributeCollection : IEnumerable<BvAttribute>
 
         return created;
     }
+    
+    public void Add(BvAttribute attribute)
+    {
+        ArgumentNullException.ThrowIfNull(attribute);
 
+        if (Contains(attribute.Name))
+            throw new InvalidOperationException(
+                $"An attribute named '{attribute.Name}' already exists.");
+
+        _items.Add(attribute);
+    }
+
+    internal void AddUnchecked(BvAttribute attribute)
+    {
+        _items.Add(attribute);
+    }
+    
     /// <summary>
     /// Attempts to retrieve a <see cref="BvAttribute"/> from the collection with the specified name.
     /// If an attribute with the given name exists in the collection, it is returned, and the method
