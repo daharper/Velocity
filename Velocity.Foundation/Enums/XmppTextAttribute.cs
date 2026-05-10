@@ -1,5 +1,8 @@
 ﻿namespace Velocity.Foundation.Enums;
 
+/// <summary>
+/// Declares the text representation for an XMPP-related enumeration field.
+/// </summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
 public sealed class XmppTextAttribute : Attribute
 {
