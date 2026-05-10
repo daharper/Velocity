@@ -41,13 +41,22 @@ public static class BvXmlValidator
     /// <summary>
     /// Validates whether the specified string is a valid XML value.
     /// </summary>
-    /// <param name="value">The string to validate as an XML value. Can be null.</param>
+    /// <param name="value">The string to validate as an XML value.</param>
     /// <returns>
     /// Returns true if the string contains only characters that are valid according to the XML specification.
     /// Returns false if the string is null or contains invalid XML characters.
     /// </returns>
     public static bool IsValidValue(string? value)
-        => value is not null && value.EnumerateRunes().All(rune => IsValidChar(rune.Value));
+    {
+        if (value is null) return false;
+        
+        foreach (var rune in value.EnumerateRunes())
+        {
+            if (!IsValidChar(rune.Value)) return false;
+        }
+        
+        return true;
+    }
 
     /// <summary>
     /// Determines whether the specified Unicode character value is a valid character

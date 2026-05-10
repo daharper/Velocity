@@ -7,22 +7,22 @@ namespace Velocity.Foundation.Xml;
 /// Represents an XML attribute with a name and value, providing functionality to validate,
 /// convert, and serialize the attribute's data to XML-compliant formats.
 /// </summary>
-public sealed class BvXmlAttribute
+public sealed class BvAttribute
 {
     private string _name = string.Empty;
     private string _value = string.Empty;
 
-    public BvXmlAttribute()
+    public BvAttribute()
     {
     }
 
-    public BvXmlAttribute(string name, string value = "")
+    public BvAttribute(string name, string value = "")
     {
         Name = name;
         Value = value;
     }
 
-    public BvXmlAttribute(BvXmlAttribute other)
+    public BvAttribute(BvAttribute other)
     {
         ArgumentNullException.ThrowIfNull(other);
 
@@ -95,12 +95,12 @@ public sealed class BvXmlAttribute
     public override string ToString() => ToXml();
 
     /// <summary>
-    /// Creates a new instance of the <see cref="BvXmlAttribute"/> class that is a copy of the current instance.
+    /// Creates a new instance of the <see cref="BvAttribute"/> class that is a copy of the current instance.
     /// </summary>
     /// <returns>
-    /// A new <see cref="BvXmlAttribute"/> instance with the same name and value as the current instance.
+    /// A new <see cref="BvAttribute"/> instance with the same name and value as the current instance.
     /// </returns>
-    public BvXmlAttribute Clone() => new(this);
+    public BvAttribute Clone() => new(this);
 
     // Convenience value-related methods
     
@@ -133,33 +133,33 @@ public sealed class BvXmlAttribute
 
     // convenience factory methods
     
-    public static BvXmlAttribute Create(string name, string value)
+    public static BvAttribute Create(string name, string value)
         => new(name, value);
 
-    public static BvXmlAttribute Create(string name, int value)
+    public static BvAttribute Create(string name, int value)
         => new(name, value.ToString(CultureInfo.InvariantCulture));
 
-    public static BvXmlAttribute Create(string name, long value)
+    public static BvAttribute Create(string name, long value)
         => new(name, value.ToString(CultureInfo.InvariantCulture));
 
-    public static BvXmlAttribute Create(string name, double value)
+    public static BvAttribute Create(string name, double value)
         => new(name, value.ToString(CultureInfo.InvariantCulture));
 
-    public static BvXmlAttribute Create(string name, decimal value)
+    public static BvAttribute Create(string name, decimal value)
         => new(name, value.ToString(CultureInfo.InvariantCulture));
 
-    public static BvXmlAttribute Create(string name, bool value)
+    public static BvAttribute Create(string name, bool value)
         => new(name, XmlConvert.ToString(value));
 
-    public static BvXmlAttribute Create(string name, DateTime value)
+    public static BvAttribute Create(string name, DateTime value)
         => new(name, XmlConvert.ToString(value, XmlDateTimeSerializationMode.RoundtripKind));
 
-    public static BvXmlAttribute Create(string name, DateTimeOffset value)
+    public static BvAttribute Create(string name, DateTimeOffset value)
         => new(name, XmlConvert.ToString(value));
 
-    public static BvXmlAttribute Create(string name, Guid value)
+    public static BvAttribute Create(string name, Guid value)
         => new(name, value.ToString("D"));
 
-    public static BvXmlAttribute Create<TEnum>(string name, TEnum value) where TEnum : struct, Enum
+    public static BvAttribute Create<TEnum>(string name, TEnum value) where TEnum : struct, Enum
         => new(name, value.ToString());
 }
