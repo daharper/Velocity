@@ -1,5 +1,8 @@
 ﻿namespace Velocity.Foundation.Enums;
 
+/// <summary>
+/// Utility methods for working with XMPP-related enumerations.
+/// </summary>
 public static class XmppEnumExtensions
 {
     public static string AsXmppText<TEnum>(this TEnum value) where TEnum : struct, Enum
